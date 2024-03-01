@@ -1,34 +1,16 @@
-#Lab1 
+import requests
+import time
 
-def more(text):
-    count = 0
-    for line in text.split('\n'):
-        print(line)
-        count += 1
-        if count % 30 == 0:
-            reply = input('Show more (y/n)? ')
-            if reply == 'n':
-                break
-
-url = input('Enter a URL:')
-
-if not url.startswith("http://"):
-    url = "http://" + url
+url = input('Enter a URL : ') # Ask the user to input a url
 
 with requests.get(url) as response:
+    resp = requests.get(url)
+    hdrs = response.headers
 
-    print(f"Website headers are {url} \n , {response.headers} \n\n")
-
-    server = response.headers.get('Server')
-
-    if server:
-        print(f"The server is {server}")
-    else:
-        print("No server found")
-        
-    cookies = response.headers.get('Set-Cookie')
-
-    if cookies:
-        print(f"The cookie is {cookies}")
-    else:
-        print("No cookie found")
+    print("\nFinding Software")
+    if 'Server' in resp.headers :
+        print("Server : ", resp.headers['Server'])
+    
+    for key, value in enumerate(response.cookies) :
+        print("\nFinding Cookies")
+        print("Cookie {} expires in {} days".format(key, round((value.expires - time.time())/86400)))
